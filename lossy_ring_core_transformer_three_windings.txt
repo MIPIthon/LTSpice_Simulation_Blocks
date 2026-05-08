@@ -1,0 +1,54 @@
+* AL unit: nH/N^2
+* K: coupling factor 0-1
+* NP: primary turns (between P and _P)
+* NS1: secondary 1 turns (between S1 and _S1)
+* NS2: secondary 2 turns (between S2 and _S2)
+* OD unit: mm (core outer diameter)
+* ID unit: mm (core inner diameter)
+* H unit: mm (core height)
+* COND unit: MS/m (wire conductivity)
+* DP unit: mm (primary wire diameter)
+* DS1 unit: mm (secondary 1 wire diameter)
+* DS2 unit: mm (secondary 2 wire diameter)
+
+.SUBCKT LOSSY_RING_CORE_TRANSFORMER_THREE_WINDINGS P _P S1 _S1 S2 _S2 PARAMS: AL=9740 K=0.995 NP=1 NS1=1 NS2=1 OD=20.85 ID=9.35 H=7.85 COND=60 DP=0.2 DS1=0.2 DS2=0.2
+
+.PARAM A=(OD-ID)/2
+
+.PARAM LEN_P=2*(A+DP)+2*(H+DP)
+.PARAM LEN_P_m=LEN_P*1e-3
+.PARAM LEN_P_TOT_m=NP*LEN_P_m
+
+.PARAM LEN_S1=2*(A+DS1)+2*(H+DS1)
+.PARAM LEN_S1_m=LEN_S1*1e-3
+.PARAM LEN_S1_TOT_m=NS1*LEN_S1_m
+
+.PARAM LEN_S2=2*(A+DS2)+2*(H+DS2)
+.PARAM LEN_S2_m=LEN_S2*1e-3
+.PARAM LEN_S2_TOT_m=NS2*LEN_S2_m
+
+.PARAM AREA_DP=(3.14/4)*(DP*DP)*1e-6
+.PARAM AREA_DS1=(3.14/4)*(DS1*DS1)*1e-6
+.PARAM AREA_DS2=(3.14/4)*(DS2*DS2)*1e-6
+
+.PARAM LP=NP*NP*AL*1e-9
+.PARAM LS1=NS1*NS1*AL*1e-9
+.PARAM LS2=NS2*NS2*AL*1e-9
+
+.PARAM RP=(1/(COND*1e6))*LEN_P_TOT_m/AREA_DP
+.PARAM RS1=(1/(COND*1e6))*LEN_S1_TOT_m/AREA_DS1
+.PARAM RS2=(1/(COND*1e6))*LEN_S2_TOT_m/AREA_DS2
+
+R1 P 1 {RP}
+L1 1 _P {LP}
+
+R2 S1 2 {RS1}
+L2 2 _S1 {LS1}
+
+R3 S2 3 {RS2}
+L3 3 _S2 {LS2}
+
+K1 L1 L2 {K}
+K2 L1 L3 {K}
+K3 L2 L3 {K} 
+.ENDS

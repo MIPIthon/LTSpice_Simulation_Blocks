@@ -1,0 +1,7 @@
+.SUBCKT SPDT NC NO IN COM PARAMS: RON=1 ROFF=100Meg
+S1 COM NC N010 0 MYSW
+S2 COM NO N020 0 MYSW
+A1 IN 0 0 0 0 0 N020 0 SCHMITT Vhigh=1 Vlow=0 Trise=5ns Tfall=5ns Rout=1
+A2 IN 0 0 0 0 N010 0 0 SCHMITT Vhigh=1 Vlow=0 Trise=5ns Tfall=5ns Rout=1
+.model MYSW SW(Ron={RON} Roff={ROFF} Vt=0.5 Vh=0.1)
+.ends

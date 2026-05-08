@@ -1,0 +1,38 @@
+* AL unit: nH/N^2
+* K: Coupling factor 0-1
+* NP: Primary turns (between P and _P)
+* NS: Secondary turns (between S and _S)
+* OD unit: mm (core outer diameter)
+* ID unit: mm (core inner diameter)
+* H unit: mm (core height)
+* COND unit: MS/m (wire conductivity)
+* DP unit: mm (primary wire diameter)
+* DS unit: mm (secondary wire diameter)
+
+.SUBCKT LOSSY_RING_CORE_TRANSFORMER P _P S _S PARAMS: AL=9740 K=0.995 NP=1 NS=1 OD=20.85 ID=9.35 H=7.85 COND=60 DP=0.2 DS=0.2
+
+.PARAM A=(OD-ID)/2
+.PARAM LEN_P=2*(A+DP)+2*(H+DP)
+.PARAM LEN_P_m=LEN_P*1e-3
+.PARAM LEN_P_TOT_m=NP*LEN_P_m
+
+.PARAM LEN_S=2*(A+DS)+2*(H+DS)
+.PARAM LEN_S_m=LEN_S*1e-3
+.PARAM LEN_S_TOT_m=NS*LEN_S_m
+
+.PARAM AREA_DP=(3.14/4)*(DP*DP)*1e-6
+.PARAM AREA_DS=(3.14/4)*(DS*DS)*1e-6
+
+.PARAM LP=NP*NP*AL*1e-9
+.PARAM LS=NS*NS*AL*1e-9
+.PARAM RP=(1/(COND*1e6))*LEN_P_TOT_m/AREA_DP
+.PARAM RS=(1/(COND*1e6))*LEN_S_TOT_m/AREA_DS
+
+R1 P 1 {RP}
+L1 1 _P {LP}
+
+R2 S 2 {RS}
+L2 2 _S {LS}
+
+K1 L1 L2 {K} 
+.ENDS
